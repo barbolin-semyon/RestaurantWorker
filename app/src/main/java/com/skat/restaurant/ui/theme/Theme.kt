@@ -5,27 +5,33 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
-
-private val DarkColorPalette = darkColors(
-    primary = Purple200,
-    primaryVariant = Purple700,
-    secondary = Teal200
-)
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Red
 
 private val LightColorPalette = lightColors(
-    primary = Purple500,
-    primaryVariant = Purple700,
-    secondary = Teal200
-
-    /* Other default colors to override
-    background = Color.White,
-    surface = Color.White,
+    primary = Orange500,
     onPrimary = Color.White,
-    onSecondary = Color.Black,
-    onBackground = Color.Black,
-    onSurface = Color.Black,
-    */
+    primaryVariant = Orange700,
+    secondary = Blue500,
+    error = Red,
+    background = LightGray,
+    onBackground = DarkGray1,
+    surface = Color.White,
+    onSurface = DarkGray1
 )
+
+private val DarkColorPalette = darkColors(
+    primary = Orange500,
+    onPrimary = Color.White,
+    primaryVariant = Orange700,
+    secondary = Blue500,
+    error = Red,
+    background = DarkGray3,
+    onBackground = DarkGray2,
+    surface = DarkGray2,
+    onSurface = Gray
+)
+
 
 @Composable
 fun RestaurantTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
