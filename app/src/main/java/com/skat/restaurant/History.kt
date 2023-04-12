@@ -1,4 +1,4 @@
-package com.example.restaurant
+package com.skat.restaurant
 
 import com.google.firebase.firestore.Query
 import java.util.*

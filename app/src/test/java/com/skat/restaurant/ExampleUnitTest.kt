@@ -1,4 +1,4 @@
-package com.example.restaurant
+package com.skat.restaurant
 
 import org.junit.Test
 

@@ -1,4 +1,4 @@
-package com.example.restaurant
+package com.skat.restaurant
 
 data class Menu(
     val cook: String,

@@ -1,4 +1,4 @@
-package com.example.restaurant
+package com.skat.restaurant
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

@@ -1,4 +1,4 @@
-package com.example.restaurant
+package com.skat.restaurant
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -10,7 +10,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.restaurant.ui.theme.RestaurantTheme
+import com.skat.restaurant.ui.theme.RestaurantTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

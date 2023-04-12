@@ -1,4 +1,4 @@
-package com.example.restaurant
+package com.skat.restaurant
 
 import android.annotation.SuppressLint
 import com.google.android.gms.tasks.Task
