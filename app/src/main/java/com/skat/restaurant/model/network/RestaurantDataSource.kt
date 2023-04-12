@@ -1,10 +1,10 @@
-package com.skat.restaurant
+package com.skat.restaurant.model.network
 
 import android.annotation.SuppressLint
 import com.google.android.gms.tasks.Task
-import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.skat.restaurant.model.entities.History
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*

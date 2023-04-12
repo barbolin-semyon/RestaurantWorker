@@ -1,6 +1,7 @@
-package com.skat.restaurant
+package com.skat.restaurant.model.entities
 
 import com.google.firebase.firestore.Query
+import com.skat.restaurant.model.entities.Menu
 import java.util.*
 
 data class History(
