@@ -28,12 +28,13 @@ class MainActivity : ComponentActivity() {
             val isAuthorization by viewModel.isAuthorization.collectAsState()
             LaunchedEffect(key1 = Unit, block = { viewModel.checkAuthorization() })
             val navController = rememberNavController()
+            RestaurantTheme {
+                isAuthorization?.let {
+                    val startDestination = if (it) Screens.Main.route else Screens.SignIn.route
 
-            isAuthorization?.let {
-                val startDestination = if (it) Screens.Main.route else Screens.SignIn.route
+                    AppNavHost(navController = navController, startDestination = startDestination) {
 
-                AppNavHost(navController = navController, startDestination = startDestination) {
-
+                    }
                 }
             }
         }
