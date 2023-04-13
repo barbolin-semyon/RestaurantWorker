@@ -11,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.skat.restaurant.ui.features.main.ProfileScreen
+import com.skat.restaurant.ui.features.main.officiant.AllMenuScreen
 import com.skat.restaurant.ui.features.main.officiant.MapScreen
 
 @Composable
@@ -36,7 +37,7 @@ fun NavGraphBuilder.officiant(navController: NavController) {
         }
 
         composable(WorkScreens.EatScreen.route) {
-
+            AllMenuScreen(navController)
         }
 
         composable(WorkScreens.Confirmation.route) {
