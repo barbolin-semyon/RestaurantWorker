@@ -2,6 +2,7 @@ package com.skat.restaurant.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.skat.restaurant.model.entities.Worker
 import com.skat.restaurant.model.network.FirebaseAuthDataSource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -44,21 +45,31 @@ class AuthorizationViewModel() : ViewModel() {
         db.signOut()
     }
 
-    fun register(email: String, password: String) {
+    fun register(worker: Worker, password: String) {
         viewModelScope.launch {
             RequestObserver.startLoader()
-            db.createUser(email, password)
+            db.createUser(worker.email, password)
                 .addOnSuccessListener {
-                    _isAuthorization.value = true
-                    RequestObserver.stopLoader()
+                    addUserInDb(worker)
                 }
                 .addOnCanceledListener {
                     RequestObserver.stopLoader()
                 }
                 .addOnFailureListener {
-                    RequestObserver.showErrorMessage("Проблема авторизации")
+                    RequestObserver.showErrorMessage("Проблема Регистрации")
                 }
         }
     }
 
+    private fun addUserInDb(worker: Worker) = viewModelScope.launch {
+        db.addUserInDb(worker)
+            .addOnSuccessListener {
+                _isAuthorization.value = true
+                RequestObserver.stopLoader()
+            }
+
+            .addOnFailureListener {
+                RequestObserver.showErrorMessage("Проблема Регистрации")
+            }
+    }
 }
