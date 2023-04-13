@@ -2,13 +2,13 @@ package com.skat.restaurant.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Orange200 = Color(0xFFFFEBDA)
+val Orange200 = Color(0xFFFDE3CE)
 val Orange500 = Color(0xFFFFE4CD)
-val Orange700 = Color(0xFFFFDABC)
+val Orange700 = Color(0xFFFFC596)
 
 val Blue200 = Color(0xFFC2E3E3)
 val Blue500 = Color(0xFFB6E3E3)
-val Blue700 = Color(0xFF92C6C6)
+val Blue700 = Color(0xFF478181)
 
 val LightGray = Color(0xFFF8F7FB)
 val Gray = Color(0xFFE0E0E0)

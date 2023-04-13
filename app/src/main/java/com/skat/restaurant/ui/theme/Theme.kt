@@ -9,12 +9,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Red
 
 private val LightColorPalette = lightColors(
-    primary = Orange500,
+    primary = Blue700,
     onPrimary = Color.White,
     primaryVariant = Orange700,
     secondary = Blue500,
     error = Red,
-    background = LightGray,
+    background = Orange200,
     onBackground = DarkGray1,
     surface = Color.White,
     onSurface = DarkGray1
