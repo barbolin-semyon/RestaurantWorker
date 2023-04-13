@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.skat.restaurant.ui.features.auth.RegisterScreen
 import com.skat.restaurant.ui.features.auth.SignInScreen
+import com.skat.restaurant.ui.features.main.MainScreen
 
 
 /**
@@ -34,7 +35,7 @@ fun AppNavHost(
         }
 
         composable(Screens.Main.route) {
-
+            MainScreen(authNavController = navController)
         }
     }
 }
