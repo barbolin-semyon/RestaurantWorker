@@ -10,6 +10,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.skat.restaurant.ui.features.main.ProfileScreen
+import com.skat.restaurant.ui.features.main.officiant.MapScreen
 
 @Composable
 fun MainNavHost(navController: NavHostController, paddingValues: PaddingValues) {
@@ -19,7 +21,7 @@ fun MainNavHost(navController: NavHostController, paddingValues: PaddingValues) 
         startDestination = BottomScreens.WorkScreen.route) {
         officiant(navController)
         composable(BottomScreens.ProfileScreen.route) {
-
+            ProfileScreen()
         }
     }
 }
@@ -30,7 +32,7 @@ fun NavGraphBuilder.officiant(navController: NavController) {
         route = BottomScreens.WorkScreen.route
     ) {
         composable(WorkScreens.MapScreen.route) {
-
+            MapScreen(navController = navController)
         }
 
         composable(WorkScreens.EatScreen.route) {
