@@ -14,5 +14,14 @@ import net.engawapg.lib.zoomable.zoomable
 
 @Composable
 fun MapScreen(navController: NavController) {
-
+    Image(
+        painter = painterResource(id = R.drawable.map),
+        contentDescription = "",
+        modifier = Modifier
+            .fillMaxSize()
+            .zoomable(
+                rememberZoomState()
+            )
+            .clickable {  }
+    )
 }
