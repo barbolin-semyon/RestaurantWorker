@@ -24,7 +24,7 @@ fun TextFieldEmail(
         value = email,
         onValueChange = { text -> onValueChange(text) },
         paddingValues = paddingValues,
-        labelText = "Введите email",
+        labelText = "Email",
         isError = email.emailIfValid().not(),
         errorText = "Не валидный email",
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)

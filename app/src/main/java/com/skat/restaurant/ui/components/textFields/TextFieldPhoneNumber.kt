@@ -20,13 +20,11 @@ import com.skat.restaurant.utils.CustomVisualTransformation
 @Composable
 fun TextFieldPhoneNumber(
     value: String,
-    modifier: Modifier = Modifier.fillMaxWidth(),
-    paddingValues: PaddingValues = PaddingValues(horizontal = 8.dp),
+    paddingValues: PaddingValues = PaddingValues(horizontal = 32.dp),
     onValueChange: (newValue: String) -> Unit
 ) {
     TextFieldsWithLabelError(
         value = value,
-        modifier = modifier,
         paddingValues = paddingValues,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
         onValueChange = {
@@ -35,6 +33,6 @@ fun TextFieldPhoneNumber(
             }
         },
         visualTransformation = CustomVisualTransformation("+7-000-000-00-00", '0'),
-        labelText = "Введите номер телефона",
+        labelText = "Номер телефона",
     )
 }
