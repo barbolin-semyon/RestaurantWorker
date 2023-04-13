@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.ListenerRegistration
 import com.skat.restaurant.model.entities.History
+import com.skat.restaurant.model.entities.Menu
 import com.skat.restaurant.model.entities.Table
 import com.skat.restaurant.model.network.RestaurantDataSource
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,6 +26,10 @@ class FirestoreViewModel : ViewModel() {
     private val _history = MutableStateFlow<History?>(null)
     val history: StateFlow<History?>
         get() = _history
+
+    private val _menu = MutableStateFlow<List<Menu>>(emptyList())
+    val menu: StateFlow<List<Menu>>
+        get() = _menu
 
     private lateinit var snapshotListenerPlaces: ListenerRegistration
 
@@ -46,8 +51,31 @@ class FirestoreViewModel : ViewModel() {
     }
 
     fun getHistory(reference: DocumentReference) = viewModelScope.launch {
-        val query = reference.get().addOnSuccessListener {
+        reference.get().addOnSuccessListener {
             _history.value = it.toObject(History::class.java)
+        }
+    }
+
+    fun getMenu(eats: List<DocumentReference>) = viewModelScope.launch {
+        val temp = mutableListOf<Menu>()
+        eats.forEach {
+            it.get().addOnSuccessListener {
+                it.toObject(Menu::class.java)
+                    ?.let { it1 ->
+                        temp.add(it1)
+                        if (temp.size == eats.size) {
+                            _menu.value = temp
+                        }
+                    }
+            }
+        }
+    }
+
+    fun getMenu() = viewModelScope.launch {
+        db.getQueryMenu().addSnapshotListener { value, error ->
+            value?.toObjects(Menu::class.java)?.let {
+                _menu.value = it
+            }
         }
     }
 
