@@ -19,9 +19,8 @@ import net.engawapg.lib.zoomable.zoomable
 @Composable
 fun MapScreen(navController: NavController) {
     BottomSheetView(
-        sheetContent = { TableInformationView() }
+        sheetContent = { TableInformationView(navController) }
     ) { state, scope ->
-        LaunchedEffect(key1 = Unit) { state.show() }
         Image(
             painter = painterResource(id = R.drawable.map),
             contentDescription = "",
@@ -30,7 +29,7 @@ fun MapScreen(navController: NavController) {
                 .zoomable(
                     rememberZoomState()
                 )
-                .clickable { }
+                .clickable { scope.launch { state.show() } }
         )
     }
 }
