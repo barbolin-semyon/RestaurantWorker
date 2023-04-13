@@ -19,7 +19,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.tinn.ui.components.spinner.RoleSpinner
 import com.example.tinn.ui.components.textFields.TextFieldPassword
+import com.skat.restaurant.model.entities.Worker
 import com.skat.restaurant.ui.components.textFields.TextFieldEmail
 import com.skat.restaurant.ui.components.textFields.TextFieldPhoneNumber
 import com.skat.restaurant.ui.components.textFields.TextFieldsWithLabelError
@@ -63,7 +65,8 @@ fun RegisterScreen(navController: NavController) {
         ) {
             Column(
                 Modifier
-                    .fillMaxWidth().padding(vertical = 16.dp)
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp)
                     .verticalScroll(scrollState),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
@@ -76,6 +79,7 @@ fun RegisterScreen(navController: NavController) {
                 var phone by remember { mutableStateOf("") }
                 var firstName by remember { mutableStateOf("") }
                 var secondName by remember { mutableStateOf("") }
+                var role by remember { mutableStateOf("") }
 
                 TextFieldEmail(email = email, onValueChange = { email = it })
 
@@ -90,6 +94,10 @@ fun RegisterScreen(navController: NavController) {
                     onValueChange = { secondName = it },
                     labelText = "Фамилия",
                 )
+
+                RoleSpinner(role) {
+                    role = it
+                }
 
                 TextFieldPhoneNumber(
                     value = phone,
@@ -115,7 +123,16 @@ fun RegisterScreen(navController: NavController) {
                 Button(
                     modifier = Modifier.padding(top = 8.dp),
                     shape = RoundedCornerShape(16.dp),
-                    onClick = { viewModel.register(email, password) },
+                    onClick = {
+                        viewModel.register(
+                            Worker(
+                                name = "$secondName $firstName",
+                                email = email,
+                                phone = phone
+                            ),
+                            password
+                        )
+                    },
                     enabled = email.emailIfValid() && password.length >= 8 && password == repeatPassword,
                     content = { Text("Зарегистрироваться") }
                 )
