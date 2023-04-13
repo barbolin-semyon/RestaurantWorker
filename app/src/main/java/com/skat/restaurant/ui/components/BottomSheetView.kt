@@ -1,13 +1,9 @@
 package com.skat.restaurant.ui.components
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
 
@@ -23,6 +19,7 @@ fun BottomSheetView(
     ModalBottomSheetLayout(
         sheetBackgroundColor = Color.White,
         sheetElevation = 12.dp,
+        sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
         sheetState = state,
         sheetContent = { sheetContent() }
     ) {
