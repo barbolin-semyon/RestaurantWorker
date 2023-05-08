@@ -20,12 +20,13 @@ object RestaurantDataSource {
     /**
      * Получение меню с сортировкой
      */
-    fun getQueryMenu(keySort: String, reverse: Boolean): Query {
+    fun getQueryMenu(keySort: String = "", reverse: Boolean = true): Query {
         return if (reverse) {
             firestore.collection("menu")
-                .orderBy(keySort, Query.Direction.DESCENDING)
+                //.orderBy(keySort, Query.Direction.DESCENDING)
         } else {
-            firestore.collection("menu").orderBy(keySort, Query.Direction.ASCENDING)
+            firestore.collection("menu")
+                //.orderBy(keySort, Query.Direction.ASCENDING)
         }
     }
 
