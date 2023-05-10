@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.util.*
+import kotlin.collections.HashMap
 
 class FirestoreViewModel : ViewModel() {
     private val db = RestaurantDataSource
@@ -47,7 +48,12 @@ class FirestoreViewModel : ViewModel() {
                     RequestObserver.showErrorMessage(error?.message.toString())
                 }
             }
+    }
 
+    fun updateTable(tableId: Int, values: HashMap<String, Any>) {
+        db.updateTable(tableId, values).addOnSuccessListener {
+
+        }
     }
 
     fun getHistory(reference: DocumentReference) = viewModelScope.launch {

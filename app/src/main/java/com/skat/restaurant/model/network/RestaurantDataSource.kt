@@ -79,7 +79,7 @@ object RestaurantDataSource {
     /**
      * Обновление столиков
      */
-    fun updateTable(tableId: String, data: HashMap<String, Any>): Task<Void> {
-        return firestore.collection("tables").document(tableId).update(data)
+    fun updateTable(tableId: Int, data: HashMap<String, Any>): Task<Void> {
+        return firestore.collection("tables").document(tableId.toString()).update(data)
     }
 }

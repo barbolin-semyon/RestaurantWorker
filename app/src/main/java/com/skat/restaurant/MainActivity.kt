@@ -12,9 +12,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.skat.restaurant.ui.navigation.AppNavHost
 import com.skat.restaurant.ui.navigation.Screens
 import com.skat.restaurant.ui.theme.RestaurantTheme
@@ -26,6 +28,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val viewModel: AuthorizationViewModel = viewModel()
             val isAuthorization by viewModel.isAuthorization.collectAsState()
+            rememberSystemUiController().setStatusBarColor(Color.White)
             LaunchedEffect(key1 = Unit, block = { viewModel.checkAuthorization() })
             val navController = rememberNavController()
             RestaurantTheme {
