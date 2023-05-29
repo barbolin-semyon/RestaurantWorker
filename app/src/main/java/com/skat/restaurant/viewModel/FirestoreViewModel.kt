@@ -1,7 +1,5 @@
 package com.skat.restaurant.viewModel
 
-import androidx.compose.runtime.MutableState
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -50,14 +48,36 @@ class FirestoreViewModel : ViewModel() {
             }
     }
 
-    fun updateTable(tableId: Int, values: HashMap<String, Any>) {
+    fun updateTable(tableId: Int, values: HashMap<String, Any>) = viewModelScope.launch {
         db.updateTable(tableId, values).addOnSuccessListener {
 
         }
     }
 
+    fun updateHistory(historyId: String, values: HashMap<String, Any>) = viewModelScope.launch {
+        db.updateHistory(historyId, values)
+    }
+
+    fun createHistory(tableId: Int) = viewModelScope.launch {
+        val history = History(table = db.getQueryTable(tableId.toString()))
+        db.createQueryHistory(history)
+
+        updateTable(
+            tableId = tableId,
+            hashMapOf("status" to true, "current" to db.getQueryHistory(history.id))
+        )
+    }
+
     fun getHistory(reference: DocumentReference) = viewModelScope.launch {
         reference.get().addOnSuccessListener {
+            _history.value = it.toObject(History::class.java)
+        }
+    }
+
+    fun getQueryMenu(id: String) = db.getQueryMenu(id)
+
+    fun getHistory(historyId: String) = viewModelScope.launch {
+        db.getHistory(historyId).addOnSuccessListener {
             _history.value = it.toObject(History::class.java)
         }
     }

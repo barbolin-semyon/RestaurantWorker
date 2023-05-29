@@ -1,6 +1,7 @@
 package com.skat.restaurant.model.entities
 
 data class Menu(
+    val id: String = "",
     val cook: String = "",
     val img: String = "",
     val ingredients: List<String> = emptyList(),

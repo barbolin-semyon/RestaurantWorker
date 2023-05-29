@@ -2,6 +2,8 @@ package com.skat.restaurant.model.network
 
 import android.annotation.SuppressLint
 import com.google.android.gms.tasks.Task
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.skat.restaurant.model.entities.History
@@ -14,7 +16,6 @@ object RestaurantDataSource {
 
     @SuppressLint("StaticFieldLeak")
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
-
     private val dispatcher = Dispatchers.IO
 
     /**
@@ -23,10 +24,10 @@ object RestaurantDataSource {
     fun getQueryMenu(keySort: String = "", reverse: Boolean = true): Query {
         return if (reverse) {
             firestore.collection("menu")
-                //.orderBy(keySort, Query.Direction.DESCENDING)
+//            .orderBy(keySort, Query.Direction.DESCENDING)
         } else {
             firestore.collection("menu")
-                //.orderBy(keySort, Query.Direction.ASCENDING)
+  //          .orderBy(keySort, Query.Direction.ASCENDING)
         }
     }
 
@@ -51,7 +52,7 @@ object RestaurantDataSource {
      * Создание истории
      */
     fun createQueryHistory(history: History) {
-        firestore.collection("history").add(history)
+        firestore.collection("history").document(history.id).set(history)
     }
 
     /**
@@ -60,6 +61,10 @@ object RestaurantDataSource {
     fun getQueryHistory(date: Date): Query {
         return firestore
             .collection("history").whereEqualTo("startTime", date)
+    }
+
+    suspend fun getQueryHistoryByUser(userName: String) = withContext(Dispatchers.IO) {
+        return@withContext firestore.collection("history").whereEqualTo("waiter", userName).get()
     }
 
     /**
@@ -76,10 +81,32 @@ object RestaurantDataSource {
         return firestore.collection("tables")
     }
 
+    fun getQueryTable(id: String): DocumentReference {
+        return firestore.collection("tables").document(id)
+    }
+
+    fun getQueryHistory(id: String): DocumentReference {
+        return firestore.collection("history").document(id)
+    }
+
+    fun getQueryMenu(id: String): DocumentReference {
+        return firestore.collection("menu").document(id)
+
+    }
+
     /**
      * Обновление столиков
      */
     fun updateTable(tableId: Int, data: HashMap<String, Any>): Task<Void> {
         return firestore.collection("tables").document(tableId.toString()).update(data)
     }
+
+    fun updateHistory(historyString: String, data: HashMap<String, Any>): Task<Void> {
+        return firestore.collection("history").document(historyString).update(data)
+    }
+
+    fun getHistory(historyString: String): Task<DocumentSnapshot> {
+        return firestore.collection("history").document(historyString).get()
+    }
 }
+

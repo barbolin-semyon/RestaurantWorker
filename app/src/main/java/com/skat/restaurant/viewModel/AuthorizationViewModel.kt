@@ -17,7 +17,7 @@ class AuthorizationViewModel() : ViewModel() {
         get() = _isAuthorization
 
     fun checkAuthorization() {
-        _isAuthorization.value = db.getUser() != null
+        _isAuthorization.value = true
     }
 
     fun signInWithEmail(email: String, password: String) {

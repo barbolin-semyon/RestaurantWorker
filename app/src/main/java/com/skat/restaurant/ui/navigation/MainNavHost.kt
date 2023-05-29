@@ -19,7 +19,8 @@ fun MainNavHost(navController: NavHostController, paddingValues: PaddingValues) 
     NavHost(
         modifier = Modifier.padding(paddingValues),
         navController = navController,
-        startDestination = BottomScreens.WorkScreen.route) {
+        startDestination = BottomScreens.WorkScreen.route
+    ) {
         officiant(navController)
         composable(BottomScreens.ProfileScreen.route) {
             ProfileScreen()
@@ -37,7 +38,12 @@ fun NavGraphBuilder.officiant(navController: NavController) {
         }
 
         composable(WorkScreens.EatScreen.route) {
-            AllMenuScreen(navController)
+            val historyId =
+                navController.previousBackStackEntry?.savedStateHandle?.get<String>("historyId")
+
+            if (historyId != null) {
+                AllMenuScreen(navController, historyId)
+            }
         }
 
         composable(WorkScreens.Confirmation.route) {

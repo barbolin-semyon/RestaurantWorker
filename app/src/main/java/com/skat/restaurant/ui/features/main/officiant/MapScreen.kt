@@ -46,6 +46,13 @@ fun MapScreen(navController: NavController) {
     ) { state, scope ->
         val zoomState = rememberZoomState()
         val tables by viewModel.tables.collectAsState()
+        LaunchedEffect(key1 = tables, block = {
+            if (state.currentValue != ModalBottomSheetValue.Hidden) {
+                scope.launch {
+                    state.hide()
+                }
+            }
+        })
         var isEditMode by remember { mutableStateOf(false) }
 
         Scaffold(topBar = {
@@ -59,7 +66,12 @@ fun MapScreen(navController: NavController) {
                     IconButton(
                         onClick = {
                             if (isEditMode) scope.launch {
-                                tables.forEach { viewModel.updateTable(it.number, hashMapOf("cordinates" to it.cordinates)) }
+                                tables.forEach {
+                                    viewModel.updateTable(
+                                        it.number,
+                                        hashMapOf("cordinates" to it.cordinates)
+                                    )
+                                }
                             }
 
                             isEditMode = isEditMode.not()

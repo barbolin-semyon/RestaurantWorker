@@ -15,7 +15,7 @@ object FirebaseAuthDataSource {
 
     private val ioDispatcher = Dispatchers.IO
 
-    fun getUser(): FirebaseUser? = auth.currentUser
+    suspend fun getUser(): FirebaseUser? = auth.currentUser
 
     suspend fun signOut() = withContext(ioDispatcher) {
         auth.signOut()
@@ -28,7 +28,7 @@ object FirebaseAuthDataSource {
         return@withContext auth.createUserWithEmailAndPassword(email, password)
     }
 
-    suspend fun addUserInDb(user: Worker) = withContext(ioDispatcher){
+    suspend fun addUserInDb(user: Worker) = withContext(ioDispatcher) {
         return@withContext db.collection("workers").document(user.id).set(user)
     }
 
@@ -37,5 +37,9 @@ object FirebaseAuthDataSource {
         password: String
     ): Task<AuthResult> = withContext(ioDispatcher) {
         return@withContext auth.signInWithEmailAndPassword(email, password)
+    }
+
+    suspend fun getAllUser() = withContext(ioDispatcher) {
+        return@withContext db.collection("workers").document(getUser()!!.uid)
     }
 }
