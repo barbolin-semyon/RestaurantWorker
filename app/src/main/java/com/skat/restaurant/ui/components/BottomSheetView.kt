@@ -10,10 +10,11 @@ import kotlinx.coroutines.CoroutineScope
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun BottomSheetView(
+    state: ModalBottomSheetState,
     sheetContent: @Composable () -> Unit,
-    content: @Composable (state: ModalBottomSheetState, scope: CoroutineScope) -> Unit,
+    content: @Composable (CoroutineScope) -> Unit,
 ) {
-    val state = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+
     val scope = rememberCoroutineScope()
 
     ModalBottomSheetLayout(
@@ -23,6 +24,6 @@ fun BottomSheetView(
         sheetState = state,
         sheetContent = { sheetContent() }
     ) {
-        content(state, scope)
+        content(scope)
     }
 }

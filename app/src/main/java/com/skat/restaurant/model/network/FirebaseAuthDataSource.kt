@@ -5,6 +5,7 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
+import com.skat.restaurant.model.entities.User
 import com.skat.restaurant.model.entities.Worker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -15,8 +16,11 @@ object FirebaseAuthDataSource {
 
     private val ioDispatcher = Dispatchers.IO
 
-    suspend fun getUser(): FirebaseUser? = auth.currentUser
+    fun getUser(): FirebaseUser? = auth.currentUser
 
+    suspend fun getRoleByCode(code: String) = withContext(ioDispatcher)  {
+        return@withContext db.collection("codes").document(code).get()
+    }
     suspend fun signOut() = withContext(ioDispatcher) {
         auth.signOut()
     }
@@ -28,7 +32,7 @@ object FirebaseAuthDataSource {
         return@withContext auth.createUserWithEmailAndPassword(email, password)
     }
 
-    suspend fun addUserInDb(user: Worker) = withContext(ioDispatcher) {
+    suspend fun addUserInDb(user: User) = withContext(ioDispatcher) {
         return@withContext db.collection("workers").document(user.id).set(user)
     }
 
@@ -40,6 +44,6 @@ object FirebaseAuthDataSource {
     }
 
     suspend fun getAllUser() = withContext(ioDispatcher) {
-        return@withContext db.collection("workers").document(getUser()!!.uid)
+        return@withContext db.collection("workers").document(getUser()!!.uid).get()
     }
 }

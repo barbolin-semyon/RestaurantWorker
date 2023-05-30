@@ -1,5 +1,6 @@
 package com.skat.restaurant.ui.features.main.officiant
 
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -11,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -20,6 +22,7 @@ import com.example.restaurant.R
 import com.skat.restaurant.model.entities.Table
 import com.skat.restaurant.ui.components.BottomSheetView
 import com.skat.restaurant.viewModel.FirestoreViewModel
+import io.grpc.Context
 import kotlinx.coroutines.launch
 import net.engawapg.lib.zoomable.rememberZoomState
 import net.engawapg.lib.zoomable.zoomable
@@ -34,23 +37,30 @@ fun MapScreen(navController: NavController) {
 
         onDispose { viewModel.disableListenerCollectionPlaces() }
     }
+
+    val context = LocalContext.current
+    val pref = context.getSharedPreferences("settings", ComponentActivity.MODE_PRIVATE)
+    val role = pref.getString("role", "")
+
+    val state = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+
     var selectedTable by remember { mutableStateOf(Table()) }
     BottomSheetView(
+        state = state,
         sheetContent = {
             TableInformationView(
                 navController = navController,
                 table = selectedTable,
+                isVisible = selectedTable.number > -1,
                 viewModel = viewModel
             )
         }
-    ) { state, scope ->
+    ) { scope ->
         val zoomState = rememberZoomState()
         val tables by viewModel.tables.collectAsState()
         LaunchedEffect(key1 = tables, block = {
-            if (state.currentValue != ModalBottomSheetValue.Hidden) {
-                scope.launch {
-                    state.hide()
-                }
+            tables.find { selectedTable.number == it.number }?.let {
+                selectedTable = it
             }
         })
         var isEditMode by remember { mutableStateOf(false) }
@@ -76,11 +86,13 @@ fun MapScreen(navController: NavController) {
 
                             isEditMode = isEditMode.not()
                         }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.baseline_edit_24),
-                            tint = if (isEditMode) MaterialTheme.colors.primary else Color.Gray,
-                            contentDescription = null
-                        )
+                        if (role == "administrator") {
+                            Icon(
+                                painter = painterResource(id = R.drawable.baseline_edit_24),
+                                tint = if (isEditMode) MaterialTheme.colors.primary else Color.Gray,
+                                contentDescription = null
+                            )
+                        }
                     }
                 }
             }
@@ -98,6 +110,7 @@ fun MapScreen(navController: NavController) {
                     LaunchedEffect(key1 = x, key2 = y, block = {
                         tables[index].cordinates = listOf(x, y)
                     })
+                    val context = LocalContext.current
                     Card(
                         Modifier
                             .size(80.dp)
@@ -114,8 +127,19 @@ fun MapScreen(navController: NavController) {
                             .background(Color.White)
                             .shadow(16.dp)
                             .clickable {
-                                selectedTable = table
-                                scope.launch { state.show() }
+                                val pref = context.getSharedPreferences(
+                                    "settings",
+                                    android.content.Context.MODE_PRIVATE
+                                )
+                                val role = pref.getString("role", "guest")
+                                if ((role == "guest" && pref.getInt(
+                                        "table",
+                                        -1
+                                    ) in listOf(table.number, -1)) || role != "guest"
+                                ) {
+                                    selectedTable = table
+                                    scope.launch { state.show() }
+                                }
                             }
                     ) {
                         Box(

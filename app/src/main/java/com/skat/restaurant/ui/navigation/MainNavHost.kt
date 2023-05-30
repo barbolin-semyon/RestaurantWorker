@@ -4,26 +4,32 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
+import androidx.navigation.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navigation
-import com.skat.restaurant.ui.features.main.ProfileScreen
+import com.skat.restaurant.ui.features.main.CurrentOrdersScreen
+import com.skat.restaurant.ui.features.main.ReportScreen
 import com.skat.restaurant.ui.features.main.officiant.AllMenuScreen
 import com.skat.restaurant.ui.features.main.officiant.MapScreen
+import com.skat.restaurant.ui.features.main.officiant.ProfileScreen
 
 @Composable
-fun MainNavHost(navController: NavHostController, paddingValues: PaddingValues) {
+fun MainNavHost(navController: NavHostController, paddingValues: PaddingValues, startDestination: String) {
     NavHost(
         modifier = Modifier.padding(paddingValues),
         navController = navController,
-        startDestination = BottomScreens.WorkScreen.route
+        startDestination = startDestination
     ) {
         officiant(navController)
         composable(BottomScreens.ProfileScreen.route) {
             ProfileScreen()
+        }
+        composable(BottomScreens.CurrentOrders.route) {
+            CurrentOrdersScreen()
+        }
+
+        composable(BottomScreens.ReportScreen.route) {
+            ReportScreen()
         }
     }
 }
@@ -37,13 +43,11 @@ fun NavGraphBuilder.officiant(navController: NavController) {
             MapScreen(navController = navController)
         }
 
-        composable(WorkScreens.EatScreen.route) {
+        composable(BottomScreens.EatScreen.route) {
             val historyId =
                 navController.previousBackStackEntry?.savedStateHandle?.get<String>("historyId")
 
-            if (historyId != null) {
-                AllMenuScreen(navController, historyId)
-            }
+            AllMenuScreen(navController, historyId)
         }
 
         composable(WorkScreens.Confirmation.route) {

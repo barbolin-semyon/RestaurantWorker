@@ -21,6 +21,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.tinn.ui.components.spinner.RoleSpinner
 import com.example.tinn.ui.components.textFields.TextFieldPassword
+import com.skat.restaurant.model.entities.User
 import com.skat.restaurant.model.entities.Worker
 import com.skat.restaurant.ui.components.textFields.TextFieldEmail
 import com.skat.restaurant.ui.components.textFields.TextFieldPhoneNumber
@@ -125,7 +126,7 @@ fun RegisterScreen(navController: NavController) {
                     shape = RoundedCornerShape(16.dp),
                     onClick = {
                         viewModel.register(
-                            Worker(
+                            User(
                                 name = "$secondName $firstName",
                                 email = email,
                                 phone = phone

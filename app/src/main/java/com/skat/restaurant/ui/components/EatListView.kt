@@ -24,6 +24,7 @@ import com.skydoves.landscapist.glide.GlideImage
 @Composable
 fun MenuListView(
     eats: List<Menu>,
+    role: String,
     background: @Composable (Menu) -> Unit
 ) {
     LazyColumn(
@@ -33,6 +34,7 @@ fun MenuListView(
         items(eats) {
             ItemMenuView(
                 menu = it,
+                role = role,
                 background = { background(it) }
             )
         }
@@ -40,8 +42,9 @@ fun MenuListView(
 }
 
 @Composable
-fun ItemMenuView(menu: Menu, background: @Composable () -> Unit) {
+fun ItemMenuView(menu: Menu, role: String, background: @Composable () -> Unit) {
     SwipeToStartDismissWithCenter(
+        enabled = menu.status || role == "cook",
         background = { background() },
     ) {
         Card(
@@ -83,6 +86,10 @@ fun ItemMenuView(menu: Menu, background: @Composable () -> Unit) {
                         text = "Длительность (ч): ${menu.time}",
                         color = MaterialTheme.colors.onSurface
                     )
+
+                    if (!menu.status) {
+                        Text(text = "В стоп-листе", color = Color.Red)
+                    }
 
                     AnimatedVisibility(visible = isVisibleIngridients) {
                         Column(

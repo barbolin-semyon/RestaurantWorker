@@ -1,6 +1,5 @@
 package com.skat.restaurant.viewModel
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.DocumentReference
@@ -12,6 +11,7 @@ import com.skat.restaurant.model.network.RestaurantDataSource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.lang.Thread.State
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -26,9 +26,17 @@ class FirestoreViewModel : ViewModel() {
     val history: StateFlow<History?>
         get() = _history
 
+    private val _listHistory = MutableStateFlow<List<History>>(emptyList())
+    val listHistory: StateFlow<List<History>>
+        get() = _listHistory
+
     private val _menu = MutableStateFlow<List<Menu>>(emptyList())
     val menu: StateFlow<List<Menu>>
         get() = _menu
+
+    private val _orders = MutableStateFlow<List<HashMap<String, Any>>>(emptyList())
+    val orders: StateFlow<List<HashMap<String, Any>>>
+        get() = _orders
 
     private lateinit var snapshotListenerPlaces: ListenerRegistration
 
@@ -49,17 +57,19 @@ class FirestoreViewModel : ViewModel() {
     }
 
     fun updateTable(tableId: Int, values: HashMap<String, Any>) = viewModelScope.launch {
-        db.updateTable(tableId, values).addOnSuccessListener {
+        db.updateTable(tableId, values)
+    }
 
-        }
+    fun changeStatusMenuItemInStopList(menuId: String, status: Boolean) = viewModelScope.launch {
+        db.updateMenuItem(menuId, hashMapOf("status" to status))
     }
 
     fun updateHistory(historyId: String, values: HashMap<String, Any>) = viewModelScope.launch {
         db.updateHistory(historyId, values)
     }
 
-    fun createHistory(tableId: Int) = viewModelScope.launch {
-        val history = History(table = db.getQueryTable(tableId.toString()))
+    fun createHistory(tableId: Int, waiter: String) = viewModelScope.launch {
+        val history = History(table = db.getQueryTable(tableId.toString()), waiter = waiter)
         db.createQueryHistory(history)
 
         updateTable(
@@ -69,8 +79,8 @@ class FirestoreViewModel : ViewModel() {
     }
 
     fun getHistory(reference: DocumentReference) = viewModelScope.launch {
-        reference.get().addOnSuccessListener {
-            _history.value = it.toObject(History::class.java)
+        reference.addSnapshotListener { value, error ->
+            _history.value = value?.toObject(History::class.java)
         }
     }
 
@@ -82,15 +92,28 @@ class FirestoreViewModel : ViewModel() {
         }
     }
 
-    fun getMenu(eats: List<DocumentReference>) = viewModelScope.launch {
-        val temp = mutableListOf<Menu>()
+    fun getHistory(keySort: String = "startTime", isReverse: Boolean = true) = viewModelScope.launch {
+        db.getAllHistory(keySort, isReverse).addOnSuccessListener {
+            _listHistory.value = it.toObjects(History::class.java)
+        }
+    }
+
+    fun getHistoryForUser(userName: String) = viewModelScope.launch {
+        db.getHistoryForUser(userName).addOnSuccessListener {
+            _listHistory.value = it.toObjects(History::class.java)
+        }
+    }
+
+    fun getMenu(eats: List<HashMap<String, Any>>) = viewModelScope.launch {
+        val temp = mutableListOf<HashMap<String, Any>>()
         eats.forEach {
-            it.get().addOnSuccessListener {
-                it.toObject(Menu::class.java)
+            val reference = it["reference"] as DocumentReference
+            reference.get().addOnSuccessListener { doc ->
+                doc.toObject(Menu::class.java)
                     ?.let { it1 ->
-                        temp.add(it1)
+                        temp.add(hashMapOf("menu" to it1, "status" to it["status"]!!))
                         if (temp.size == eats.size) {
-                            _menu.value = temp
+                            _orders.value = temp
                         }
                     }
             }
@@ -106,4 +129,30 @@ class FirestoreViewModel : ViewModel() {
     }
 
     fun disableListenerCollectionPlaces() = snapshotListenerPlaces.remove()
+    fun updateStatusOrder(
+        historyId: String,
+        role: String,
+        menu: List<HashMap<String, Any>>,
+        menuIndex: Int
+    ) = viewModelScope.launch {
+        val status = if (role == "cook") "На выдаче"
+        else "Выдано"
+
+        val temp = mutableListOf<HashMap<String, Any>>()
+        menu.forEachIndexed { index, hashMap ->
+            temp.add(
+                if (menuIndex == index) {
+                    hashMapOf("reference" to hashMap["reference"]!!, "status" to status)
+                } else {
+                    hashMap
+                }
+            )
+        }
+
+        db.updateHistory(
+            historyId, hashMapOf(
+                "menu" to temp
+            )
+        )
+    }
 }

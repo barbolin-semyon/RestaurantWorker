@@ -1,10 +1,12 @@
 package com.skat.restaurant.ui.navigation
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
  import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.skat.restaurant.ui.features.auth.ChooseRoleView
 import com.skat.restaurant.ui.features.auth.RegisterScreen
 import com.skat.restaurant.ui.features.auth.SignInScreen
 import com.skat.restaurant.ui.features.main.MainScreen
@@ -17,15 +19,19 @@ import com.skat.restaurant.ui.features.main.MainScreen
 @Composable
 fun AppNavHost(
     navController: NavHostController,
-    startDestination: String,
     modifier: Modifier = Modifier,
-    changeTheme: () -> Unit
+    padding: PaddingValues,
+    startDestination: String,
 ) {
     NavHost(
         navController = navController,
-        startDestination = startDestination,
+        startDestination = startDestination ,
         modifier = modifier
     ) {
+        composable(Screens.Role.route) {
+            ChooseRoleView(navController)
+        }
+
         composable(Screens.SignIn.route) {
             SignInScreen(navController)
         }

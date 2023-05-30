@@ -27,7 +27,7 @@ object RestaurantDataSource {
 //            .orderBy(keySort, Query.Direction.DESCENDING)
         } else {
             firestore.collection("menu")
-  //          .orderBy(keySort, Query.Direction.ASCENDING)
+            //          .orderBy(keySort, Query.Direction.ASCENDING)
         }
     }
 
@@ -107,6 +107,20 @@ object RestaurantDataSource {
 
     fun getHistory(historyString: String): Task<DocumentSnapshot> {
         return firestore.collection("history").document(historyString).get()
+    }
+
+    suspend fun getAllHistory(keySort: String, isReverse: Boolean) = withContext(dispatcher) {
+        return@withContext if (isReverse) {
+            firestore.collection("history")
+                .orderBy(keySort, Query.Direction.ASCENDING).get()
+        } else {
+            firestore.collection("history")
+                .orderBy(keySort, Query.Direction.DESCENDING).get()
+        }
+    }
+
+    suspend fun getHistoryForUser(name: String) = withContext(dispatcher) {
+        return@withContext firestore.collection("history").whereEqualTo("waiter", name).get()
     }
 }
 
